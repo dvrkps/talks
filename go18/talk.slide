@@ -1,0 +1,215 @@
+Go 1.8
+Changes
+9 Mar 2017
+
+Davor Kapša
+Kraken Systems
+@dvrkps
+
+
+
+* Go 1.8
+
+Go 1.8 is released!
+
+.image images/rocket.jpg _ 350
+
+.link https://blog.golang.org/go1.8 Go 1.8 Announcement 
+
+.link http://golang.org/doc/go1.8 Go 1.8 Release Notes
+
+
+
+* Performance
+
+
+
+* Performance
+
+Most programs should run a bit faster, due to speedups in the garbage collector and optimizations in the standard library.
+
+The new back end, based on static single assignment form (SSA), generates more compact, more efficient code and provides a better platform for optimizations such as bounds check elimination.
+
+
+
+* Garbage Collector
+
+Garbage collection pauses should be significantly shorter than they were in Go 1.7, usually under 100 microseconds and often as low as 10 microseconds.
+
+
+
+* Defer
+
+The overhead of deferred function calls has been reduced by nearly half.
+
+ 	name           old time/op  new time/op  delta
+ 	Defer-4        75.1ns ± 1%  43.3ns ± 1%  -42.31%   (p=0.000 n=8+10)
+
+
+
+* Cgo
+
+The overhead of cgo calls is reduced by more than half:
+
+	name       old time/op  new time/op  delta
+	CgoNoop-8   146ns ± 1%    56ns ± 6%  -61.57%  (p=0.000 n=25+30)
+
+This is the result of merging two defers on the standard cgo calling path.
+
+.link https://crawshaw.io/blog/go1.8-cgo Less cgo overhead in Go 1.8
+
+
+
+* Miscellaneous performance improvements
+
+Lots of small updates to the standard library.
+
+There have been optimizations to implementations in the `bytes`, `crypto/aes`, `crypto/cipher`, `crypto/elliptic`, `crypto/sha256`, `crypto/sha512`, `encoding/asn1`, `encoding/csv`, `encoding/hex`, `encoding/json`, `hash/crc32`, `image/color`, `image/draw`, `math`, `math/big`, `reflect`, `regexp`, `runtime`, `strconv`, `strings`, `syscall`, `text/template`, and `unicode/utf8` packages.
+
+.link http://golang.org/doc/go1.8#library Go 1.8 Standard Library Changes
+
+
+
+* Compiler speed
+
+.image images/compilerspeed.png _ 800
+
+
+
+* Language
+
+
+
+* Struct conversion
+
+.code codes/struct_conversion.go /START OMIT/,/END OMIT/
+
+
+
+* Ports
+
+
+
+* Ports
+
+32-bit MIPS
+
+- big-endian (`linux/mips`)
+
+- little-endian (`linux/mipsle`) - requires Floating Point Unit
+
+
+
+* Tools
+
+
+
+* Default GOPATH
+
+When GOPATH is not defined, the tool will use:
+
+- `$HOME/go` on Unix
+- `%USERPROFILE%\go` on Windows
+
+
+
+* go bug
+
+The new command starts a bug report on GitHub, prefilled with information about the current system.
+
+	go bug
+
+
+
+* Vet
+
+Vet is stricter in some ways and looser where it previously caused false positives.
+
+.code codes/govet.go /func main/,
+
+
+
+* Fix
+
+Fixes the import path `"golang.org/x/net/context"` to `"context"`.
+
+
+
+* Yacc
+
+The yacc tool has been removed. As of Go 1.7 it was no longer used by the Go compiler.
+
+It has moved to the “tools” repository and is now available at golang.org/x/tools/cmd/goyacc.
+
+
+
+* Assembler
+
+For 64-bit x86 systems, the following instructions have been added: `VBROADCASTSD`, `BROADCASTSS`, `MOVDDUP`, `MOVSHDUP`, `MOVSLDUP`, `VMOVDDUP`, `VMOVSHDUP`, and `VMOVSLDUP`.
+
+For 64-bit PPC systems, the common vector scalar instructions have been added: `LXS`, `LXSDX`, `LXSI`, `LXSIWAX`, `LXSIWZX`, `LXV`, `LXVD2X`, `LXVDSX`, `LXVW4X`, `MFVSR`, `MFVSRD`, `MFVSRWZ`, `MTVSR`, `MTVSRD`, `MTVSRWA`, `MTVSRWZ`, `STXS`, `STXSDX`, `STXSI`, `STXSIWX`, `STXV`, `STXVD2X`, `STXVW4X`, `XSCV`, `XSCVDPSP`, `XSCVDPSPN`, `XSCVDPSXDS`, `XSCVDPSXWS`, `XSCVDPUXDS`, `XSCVDPUXWS`, `XSCVSPDP`, `XSCVSPDPN`, `XSCVSXDDP`, `XSCVSXDSP`, `XSCVUXDDP`, `XSCVUXDSP`, `XSCVX`, `XSCVXP`, `XVCV`, `XVCVDPSP`, `XVCVDPSXDS`, `XVCVDPSXWS`, `XVCVDPUXDS`, `XVCVDPUXWS`, `XVCVSPDP`, `XVCVSPSXDS`, `XVCVSPSXWS`, `XVCVSPUXDS`, `XVCVSPUXWS`, `XVCVSXDDP`, `XVCVSXDSP`, `XVCVSXWDP`, `XVCVSXWSP`, `XVCVUXDDP`, `XVCVUXDSP`, `XVCVUXWDP`, `XVCVUXWSP`, `XVCVX`, `XVCVXP`, `XXLAND`, `XXLANDC`, `XXLANDQ`, `XXLEQV`, `XXLNAND`, `XXLNOR`, `XXLOR`, `XXLORC`, `XXLORQ`, `XXLXOR`, `XXMRG`, `XXMRGHW`, `XXMRGLW`, `XXPERM`, `XXPERMDI`, `XXSEL`, `XXSI`, `XXSLDWI`, `XXSPLT`, and `XXSPLTW`.
+
+
+
+* Standard library
+
+
+* sort.Slice
+
+.code codes/sortslice.go /func main/,
+
+
+
+* HTTP shutdown
+
+.code codes/shutdown.go /subscribe/,/}\(\)/
+
+.code codes/shutdown.go /HandleFunc/,/gracefully/
+
+
+
+* HTTP/2
+
+`http.Response` now satisfies the `http.Pusher` interface.
+
+    type Pusher interface {
+        Push(target string, opts *PushOptions) error
+    }
+
+A simple example:
+
+.code codes/http2.go /func rootHandler/,/^}/
+
+
+
+* Plugins
+
+Go now supports a “plugin” build mode for generating plugins written in Go, and a new plugin package for loading such plugins at run time.
+
+Plugin support is currently only available on Linux.
+
+Example: [[https://github.com/campoy/golang-plugins][github.com/campoy/golang-plugins]]
+
+
+
+* More context support
+
+- http.Server.Shutdown
+- database/sql
+- net.Resolver
+
+
+
+* Minor changes
+
+.link http://golang.org/doc/go1.8#minor_library_changes Minor library changes
+
+
+
+* Conclusion
+
+.image images/party-gopher.png
+
+Upgrade to Go 1.8, now!
+
+It's literally the best version of Go, _ever_.

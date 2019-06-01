@@ -1,0 +1,376 @@
+Go 1.10
+Changes
+26 Feb 2018
+
+Davor Kapša
+Kraken Systems
+@dvrkps
+
+
+
+* Go 1.10
+
+Go 1.10 is released!
+
+.image images/rocket.jpg _ 350
+
+.link https://blog.golang.org/go1.10 Go 1.10 Announcement 
+
+.link http://golang.org/doc/go1.10 Go 1.10 Release Notes
+
+
+
+* Performance
+
+
+
+* Performance
+
+As always, the changes are so general and varied that precise statements about performance are difficult to make.
+
+Most programs should hopefully run a bit faster, due to speedups in the garbage collector, optimizations in the compiler and standard library.
+
+However no official or unofficial comparisons are out for now so it's hard to talk about performance for this release just yet.
+
+
+
+* Compiler
+
+	$ benchstat go1.9.3.txt go.1.10rc1.txt 
+	name       old time/op       new time/op       delta
+	Template         234ms ± 4%        231ms ± 4%     ~     (p=0.101 n=10+8)
+	Unicode          107ms ± 1%        109ms ± 6%     ~     (p=0.211 n=9+10)
+	GoTypes          742ms ± 2%        744ms ± 2%     ~     (p=0.905 n=9+10)
+	Compiler         3.50s ± 3%        3.54s ± 5%     ~     (p=0.393 n=10+10)
+	SSA              6.95s ± 4%        9.04s ± 5%  +29.98%  (p=0.000 n=10+10)
+	Flate            149ms ± 2%        147ms ± 5%   -1.53%  (p=0.035 n=10+9)
+	GoParser         189ms ± 3%        183ms ± 3%   -3.44%  (p=0.002 n=9+9)
+	Reflect          476ms ± 5%        489ms ± 6%   +2.90%  (p=0.043 n=10+10)
+	Tar              134ms ± 1%        220ms ± 3%  +64.14%  (p=0.000 n=9+10)
+	XML              258ms ± 6%        266ms ± 6%   +2.90%  (p=0.043 n=10+10)
+	StdCmd           19.1s ± 1%        17.1s ± 3%  -10.57%  (p=0.000 n=10+10)
+
+
+
+* Garbage Collector
+
+.image images/gc110.png _ 800
+
+
+
+* Language and ports
+
+
+
+* Language
+
+There are no significant changes to the language specification.
+
+
+
+* Ports
+
+No new ports.
+
+FreeBSD: requires FreeBSD 10.3 or later
+
+NetBSD: works but requires NetBSD 8 ... which is not released yet
+
+OpenBSD: next version will require OpenBSD 6.2
+
+OS X: next version will require OS X 10.10 Yosemite
+
+Windows: next version will require Windows 7 (no more XP or Vista)
+
+32-bits MIPS have now a new GOMIPS variable (hardfloat | softfloat)
+
+
+
+* Tools
+
+
+
+* Tools
+
+In two words: easier and faster.
+
+`GOROOT` is now optional, deduced from the binary path.
+
+A new variable `GOTMPDIR` was added to control where temporary files are created.
+
+
+
+* go build 
+
+The command now maintains a cache of recently built packages, separate from the installed packages in *$GOROOT/pkg* or *$GOPATH/pkg*.
+
+Cache location:
+
+	$ go env GOCACHE
+
+Clean cache:
+
+	$ go clean -cache
+
+
+
+* go install
+
+The command now installs only the packages and commands listed directly on the command line. 
+
+To force the installation of dependencies, use the new "go install -i" flag.
+
+
+
+* go test
+
+Also caches results, everything is faster.
+
+    $ go test strings
+    ok  	strings	(cached)
+
+In order to bypass the cache use *-count=1*
+
+    $ go test -count=1 strings
+    ok  	strings	0.295s
+
+Also runs *vet*, some of your tests might fail.
+
+To disable the running of go vet, use:
+	
+	$ go test -vet=off
+
+New *-failfast* and *-json* flags
+
+
+
+* go test coverprofile
+
+	$ go test -v -race -coverprofile=coverage.txt -covermode=atomic ./...
+
+before:
+
+	@{ \
+	set -e; \
+	mode="atomic"; \
+	echo "mode: $$mode" > $(filename); \
+	for dir in $$(go list ./...); do \
+		out=$$(go test -race -coverprofile=profile.out -covermode=$$mode $$dir); \
+		echo $$out; \
+		if [[ $$out == *FAIL* ]]; then \
+			rm -f profile.out; \
+			rm -f $(filename); \
+			exit 1; \
+		fi; \
+		if [ -f profile.out ]; then \
+			cat profile.out | grep -v "mode: $$mode" >> $(filename); \
+			rm -f profile.out; \
+		fi; \
+	done \
+	}
+
+
+
+* go fmt
+
+Small change in formatting of three-index slicing expressions.
+
+	x[i : j:k]     // Go 1.9
+	x[i : j : k]   // Go 1.10
+
+New feature in go fmt supports the inline interface with single function.
+
+	type Bitcoin interface { FreeFall() }
+
+
+
+* go fix
+
+The go fix tool now replaces imports of "golang.org/x/net/context" with "context".
+
+	$ go tool fix -r context your/package
+
+
+
+* go get
+
+The go get command now supports Fossil source code repositories.
+
+.link https://www.fossil-scm.org
+
+
+
+* go tool pprof
+
+Updated UI featuring a flame graph representation of the profiling data.
+
+.image images/flamegraph.png _ 800
+
+.link https://github.com/google/pprof
+
+* go doc
+
+For a type T, functions returning slices of `T`, `*T`, or `**T` are now linked to `T`.
+
+Those functions now appear in the `Funcs` list of the type, not the package.
+
+	$ go doc mail.Address
+	package mail // import "net/mail"
+	
+	type Address struct {
+		Name    string
+		Address string
+	}
+	
+		Address represents a single mail address.
+
+	func ParseAddress(address string) (*Address, error)
+	func ParseAddressList(list string) ([]*Address, error)
+	func (a *Address) String() string
+	$
+
+
+
+* Standard library
+
+
+
+* bufio
+
+Added Reader.Size and Writer.Size methods report the underlying buffer size.
+
+
+
+
+* bytes
+
+Fields, FieldsFunc, Split, and SplitAfter limit the capacity of the returned slices.
+
+	text := []byte("Hello World!")
+	hello := bytes.Fields(text)[0]
+	hello = append(hello, "123")
+	fmt.Printf("hello: %q text: %q\n",hello, text)
+
+1.9:
+
+	hello: "Hello123" text: "Hello123rld!"
+
+1.10:
+
+	hello: "Hello123" text: "Hello World!"
+
+
+
+* encoding/json
+
+Decoder adds a new method DisallowUnknownFields that causes it to report inputs with unknown JSON fields as a decoding error.
+
+
+
+* math/rand
+
+Shuffle function and corresponding Rand.Shuffle method shuffle an input sequence.
+
+	func ExampleShuffle() {
+		rand.Seed(time.Now().UnixNano())
+		numbers := []byte("12345")
+
+		rand.Shuffle(len(numbers), func(i, j int) {
+			numbers[i], numbers[j] = numbers[j], numbers[i]
+		})
+
+		for i := range numbers {
+			fmt.Printf("%c ", numbers[i])
+		}		
+
+	// Output:
+	// 3 4 1 5 2
+	}
+
+
+
+* math
+
+The new functions Round and RoundToEven round their arguments to the nearest floating-point integer.
+
+Round rounds a half-integer to its larger integer neighbor (away from zero) while RoundToEven rounds a half-integer to its even integer neighbor.
+
+	func main() {
+		const i = 2.5
+		r := math.Round(i)
+		fmt.Println(r) // 3
+		re := math.RoundToEven(i)
+		fmt.Println(re) // 2
+	}
+
+
+
+* net
+
+The Conn and Listener implementations in this package now guarantee that when Close returns, the underlying file descriptor has been closed.
+
+This is an important change as it now guarantees that you can do
+
+	net.Listen(...)
+	Close()
+	net.Listen()
+
+
+
+* os
+
+File adds new methods SetDeadline, SetReadDeadline, and SetWriteDeadline that allow setting I/O deadlines. 
+
+The new IsTimeout function reports whether an error represents a timeout.
+
+File's Close method now guarantee that when Close returns, the underlying file descriptor has been closed.
+
+
+
+* strings
+
+A new type Builder is a replacement for bytes.Buffer for the use case of accumulating text into a string result.
+
+	// var b bytes.Buffer
+	var b strings.Builder
+	for i := 0; i < 10000; i++ {
+		fmt.Fprintf(&b, "Go")
+		out := b.String()
+	}
+
+Benchmarks:
+
+	BenchmarkBuffer-4            100          20861915 ns/op        215641272 B/op     10317 allocs/op
+	BenchmarkBuilder-4          3000            535081 ns/op          153647 B/op         22 allocs/op
+
+Benchmarks(commented "out"):
+
+	BenchmarkBuffer-4           3000            525691 ns/op          152056 B/op         11 allocs/op
+	BenchmarkBuilder-4          3000            626132 ns/op          153647 B/op         22 allocs/op
+
+
+
+* unicode
+
+Upgraded from version 9.0 to Unicode 10.0, which adds 8,518 new characters, including four new scripts, one new property, a Bitcoin currency symbol, and 56 new emoji.
+
+.image images/mindblown.png 200 _
+
+.image images/bitcoin.png 200 _
+
+
+
+* Minor changes
+
+.link http://golang.org/doc/go1.10#minor_library_changes Minor library changes
+
+
+
+* Conclusion
+
+.image images/party-gopher.png
+
+Upgrade to Go 1.10, now!
+
+It's literally the best version of Go, _ever_.
+

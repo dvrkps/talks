@@ -1,0 +1,202 @@
+math/bits
+
+Davor Kapša
+Kraken Systems
+@dvrkps
+
+
+
+* math/bits
+
+Go 1.9 includes a new package, *math/bits*, with optimized implementations for manipulating bits. 
+
+Added to the standard library with proposal [[https://golang.org/issue/18616][#18616]].
+
+On most architectures, functions in this package are additionally recognized by the compiler and treated as intrinsics for additional performance.
+
+Package bits implements bit counting and manipulation functions for the predeclared unsigned integer types.
+
+
+
+* Functions
+
+- LeadingZeros
+- Len
+- OnesCount
+- Reverse
+- ReverseBytes
+- RotateLeft
+- TrailingZeros
+
+
+
+* LeadingZeros
+
+LeadingZeros returns the number of leading zero bits in x.
+
+	func LeadingZeros(x uint) int
+	func LeadingZeros8(x uint8) int
+	func LeadingZeros16(x uint16) int
+	func LeadingZeros32(x uint32) int
+	func LeadingZeros64(x uint64) int
+
+Example:
+
+.code codes/leadingzeros_test.go /START OMIT/,/END OMIT/
+
+
+
+* Len
+
+Len returns the minimum number of bits required to represent x.
+
+	func Len(x uint) int
+	func Len8(x uint8) int
+	func Len16(x uint16) (n int)
+	func Len32(x uint32) (n int)
+	func Len64(x uint64) (n int)
+
+Example:
+
+.code codes/len_test.go /START OMIT/,/END OMIT/
+
+
+
+* OnesCount
+
+OnesCount returns the number of one bits ("population count") in x.
+
+	func OnesCount(x uint) int
+	func OnesCount8(x uint8) int
+	func OnesCount16(x uint16) int
+	func OnesCount32(x uint32) int
+	func OnesCount64(x uint64) int
+
+Example:
+
+.code codes/onescount_test.go /START OMIT/,/END OMIT/
+
+
+
+* Reverse
+
+Reverse returns the value of x with its bits in reversed order.
+
+	func Reverse(x uint) uint
+	func Reverse8(x uint8) uint8
+	func Reverse16(x uint16) uint16
+	func Reverse32(x uint32) uint32
+	func Reverse64(x uint64) uint64
+
+Example:
+
+.code codes/reverse_test.go /START OMIT/,/END OMIT/
+
+
+
+* ReverseBytes
+
+ReverseBytes returns the value of x with its bytes in reversed order.
+
+	func ReverseBytes(x uint) uint
+	func ReverseBytes16(x uint16) uint16
+	func ReverseBytes32(x uint32) uint32
+	func ReverseBytes64(x uint64) uint64
+
+Example:
+
+.code codes/reversebytes_test.go /START OMIT/,/END OMIT/
+
+
+
+* RotateLeft
+
+RotateLeft returns the value of x rotated left by k bits.
+To rotate x right by k bits, call RotateLeft(x, -k).
+
+	func RotateLeft(x uint, k int) uint
+	func RotateLeft8(x uint8, k int) uint8
+	func RotateLeft16(x uint16, k int) uint16
+	func RotateLeft32(x uint32, k int) uint32
+	func RotateLeft64(x uint64, k int) uint64
+
+Example:
+
+.code codes/rotateleft_test.go /START OMIT/,/END OMIT/
+
+
+
+* TrailingZeros
+
+TrailingZeros returns the number of trailing zero bits in x.
+
+	func TrailingZeros(x uint) int
+	func TrailingZeros8(x uint8) int
+	func TrailingZeros16(x uint16) (n int)
+	func TrailingZeros32(x uint32) int
+	func TrailingZeros64(x uint64) int
+
+Example:
+
+.code codes/trailingzeros_test.go /START OMIT/,/END OMIT/
+
+
+
+* Performance / OnesCount64
+
+	func NaiveOnesCount64(x uint64) int {
+		var c, i uint64
+		for i = 0; i < 64; i++ {
+			c += (x >> i) & 1
+		}
+		return int(c)
+	}
+
+Benchmarks:
+
+	$ go test -bench=Count
+	goos: darwin
+	goarch: amd64
+	pkg: github.com/dvrkps/mathbitstalk/codes
+	BenchmarkNaiveOnesCount64-4     20000000                80.8 ns/op
+	BenchmarkBitsOnesCount64-4      2000000000               1.36 ns/op
+
+
+
+* Performance / TrailingZeros64
+
+	func NaiveTrailingZeros64(x uint64) int {
+		var c, i uint64
+		for i = 0; i < 64; i++ {
+			if (x>>i)&1 == 1 {
+				break
+			}
+			c++
+		}
+		return int(c)
+	}
+
+Benchmarks:
+
+	$ go test -bench=Trailing
+	goos: darwin
+	goarch: amd64
+	pkg: github.com/dvrkps/mathbitstalk/codes
+	BenchmarkNaiveTrailingZeros64-4         200000000                6.96 ns/op
+	BenchmarkBitsTrailingZeros64-4          2000000000               1.19 ns/op
+
+
+
+* More...
+
+.link https://golang.org/pkg/math/bits/ math/bits documentation
+
+.link https://books.google.hr/books?id=VicPJYM0I5QC&pg=PA81&lpg=PA81&dq=Parallel+summing+of+adjacent+bits&source=bl&ots=2o_VSSwAZp&sig=laMvt2ZI1DLOK7AkFdS8gULB-qg&hl=hr&sa=X&ved=0ahUKEwiTmKbXjYzXAhXHL1AKHRYlBpYQ6AEILTAB#v=onepage&q=Parallel%20summing%20of%20adjacent%20bits&f=false Parallel summing of adjacent bits
+
+.link http://supertech.csail.mit.edu/papers/debruijn.pdf The deBruijn algorithm
+
+.link http://herman.asia/bit-manipulation-in-go-1-9 Efficient Bit Manipulation in Go 1.9
+
+.link https://lemire.me/blog/2017/08/25/quantifying-the-performance-benefits-of-go-1-9-on-bitsets/ Quantifying the performance benefits of Go 1.9 on bitsets
+
+

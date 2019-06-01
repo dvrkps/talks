@@ -1,6 +1,11 @@
 # Talks
 
 
+Held on [Tech43 #1](https://www.facebook.com/events/396849104184105/) September 20, 2018
+
+[Slides](http://talks.godoc.org/github.com/dvrkps/talks/microservices101/talk.slide#1)
+
+
 ## Go 1.10
 
 Held on [GoTalks #15](https://www.meetup.com/Golang-ZG/events/247644001/) February 26, 2018

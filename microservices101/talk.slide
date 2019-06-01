@@ -1,0 +1,124 @@
+Microservices 101
+20 Sep 2018
+
+Davor Kapša
+Kraken Systems
+@dvrkps
+
+
+
+* Monolith
+
+.image images/monolith.jpeg _ 800 
+
+
+* What are Microservices?
+
+.image images/mono-vs-micro.png _ 900
+
+
+* Solve / Cause
+
+Microservices *solve* organizational problems.
+
+Microservices *cause* technical problems.
+
+Treat your servers like cattle not pets.
+
+
+* Benefits
+
+- reduction of code complexity
+- easy application management
+- improved testability
+- better scalability
+- stronger resilience
+- higher availability
+- quicker release cycles
+- better organizational alignment
+
+
+* Fallacies of distributed computing
+
+1. The network is reliable.
+2. Latency is zero.
+3. Bandwidth is infinite.
+4. The network is secure.
+5. Topology doesn't change.
+6. There is one administrator.
+7. Transport cost is zero.
+8. The network is homogeneous.
+
+
+* Pipeline
+
+.image images/ci-cd.jpg _ 1000
+
+
+* WTF
+
+We replaced our monolith with micro services so that
+every outage could be more like a murder mystery.
+
+.image images/circle.png 500 _
+
+
+* Tools
+
+
+* Container Runtimes
+
+.image images/docker.png
+.image images/rkt.png
+
+
+* RPC 
+
+.image images/grpc.png
+
+
+* Monitoring
+
+.image images/prometheus.png
+.image images/influxdb.png
+
+
+* Tracing
+
+.image images/open-tracing.png
+.image images/opencensus.png
+
+
+* Service Discovery
+
+.image images/consul.png
+
+
+* Distributed key value storage
+
+.image images/etcd.png
+
+
+* Managing Secrets
+
+.image images/vault.png
+
+
+* Visualize / Alerts
+
+.image images/grafana.png
+
+
+* Magic
+
+
+.image images/kubernetes.png
+
+
+* Foundation 
+
+.image images/cloud-native.png
+
+Alibaba, AWS, Azure, Cisco, Dell, Google, IBM, Intel, Oracle, Red Hat, Samsung, SAP, wmware, ...
+
+

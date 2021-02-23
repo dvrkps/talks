@@ -75,18 +75,18 @@ to be uint32 than the short declaration form:
 
 
 
-* Variable Shadowing 1/3
+* Variable shadowing 1/3
 
 .code codes/shadow1.go /START OMIT/,/END OMIT/
 
 
 
-* Variable Shadowing 2/3
+* Variable shadowing 2/3
 
 .code codes/shadow2.go /START OMIT/,/END OMIT/
 
 
 
-* Variable Shadowing 3/3
+* Variable shadowing 3/3
 
 .code codes/shadow3.go /START OMIT/,/END OMIT/

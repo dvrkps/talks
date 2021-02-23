@@ -1,0 +1,81 @@
+Go variables
+23 Feb 2021
+
+Davor Kapša
+Kraken Systems
+@dvrkps
+
+
+
+* What is a variable?
+
+Variable is the name given to a memory location to store a value.
+
+	var answer int = 42 
+
+	var pi = 3.14
+
+	var zero int
+
+	var weird = int64(70)
+
+	var dontUse int; dontUse = 666
+
+
+	var min, max int = 0,100
+
+
+	absZero := -273.15
+
+	monkeys := uint8(3)
+
+
+
+* Suggestions
+
+When declaring, but not initialising, a variable, use *var*.
+
+.code codes/suggestions1.go /START OMIT/,/END OMIT/
+
+When declaring and initialising, use *:=*
+
+.code codes/suggestions2.go /START OMIT/,/END OMIT/
+
+	
+
+* Make tricky declarations obvious
+
+When something is complicated, it should look complicated.
+
+	var length uint32 = 0x80
+
+Here length may be being used with a library which requires a specific
+numeric type and is more explicit that length is being explicitly declared
+to be uint32 than the short declaration form:
+
+	length := uint32(0x80)
+
+
+
+* Group
+
+.code codes/group.go /START OMIT/,/END OMIT/
+
+
+
+* Short variable declarations ( := )
+
+.code codes/short.go /START OMIT/,/END OMIT/
+
+
+
+* Unused variables 
+
+.code codes/unused.go /START OMIT/,/END OMIT/
+
+
+
+* Variable Shadowing 1/3
+
+.code codes/shadow1.go /START OMIT/,/END OMIT/
+

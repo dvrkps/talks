@@ -4,6 +4,7 @@
 ## Go variables
 
 Held on [Online GoTalks 23.02.2021.](https://www.meetup.com/Golang-ZG/events/276446045/) February 23, 2021
+
 [Slides](https://talks.godoc.org/github.com/dvrkps/talks/variables/variables.slide#1)
 
 

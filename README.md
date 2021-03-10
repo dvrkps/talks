@@ -1,6 +1,12 @@
 # Talks
 
 
+## Go variables
+
+Held on [Online GoTalks 23.02.2021.](https://www.meetup.com/Golang-ZG/events/276446045/) February 23, 2021
+[Slides](https://talks.godoc.org/github.com/dvrkps/talks/variables/variables.slide#1)
+
+
 ## Microservices 101
 
 Held on [Tech43 #1](https://www.facebook.com/events/396849104184105/) September 20, 2018
